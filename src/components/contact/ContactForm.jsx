@@ -1,19 +1,65 @@
+import { useState } from "react";
 import Button from "../reusable/Button";
 import FormInput from "../reusable/FormInput";
 
 const ContactForm = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Log the form data to see if it is correctly captured
+    console.log("Form Data being sent:", formData);
+
+    // Send the form data to the server
+    try {
+      const response = await fetch("http://localhost:5000/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const result = await response.text();
+        alert(result);
+        setFormData({ name: "", email: "", subject: "", message: "" }); // Reset form
+      } else {
+        alert("There was an error sending your message. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending form data:", error);
+      alert("There was a problem sending the form.");
+    }
+  };
+
   return (
     <div className="w-full lg:w-1/2">
       <div className="leading-loose">
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
+          onSubmit={handleSubmit}
           className="max-w-xl m-4 p-6 sm:p-10 bg-secondary-light dark:bg-secondary-dark rounded-xl shadow-xl text-left"
         >
           <p className="font-general-medium text-primary-dark dark:text-primary-light text-2xl mb-8">
             Contact Form
           </p>
+
           <FormInput
             inputLabel="Full Name"
             labelFor="name"
@@ -22,7 +68,10 @@ const ContactForm = () => {
             inputName="name"
             placeholderText="Your good Name"
             ariaLabelName="Name"
+            value={formData.name}
+            onChange={handleChange}
           />
+
           <FormInput
             inputLabel="Email"
             labelFor="email"
@@ -31,7 +80,10 @@ const ContactForm = () => {
             inputName="email"
             placeholderText="Your good email"
             ariaLabelName="Email"
+            value={formData.email}
+            onChange={handleChange}
           />
+
           <FormInput
             inputLabel="Subject"
             labelFor="subject"
@@ -40,6 +92,8 @@ const ContactForm = () => {
             inputName="subject"
             placeholderText="Subject"
             ariaLabelName="Subject"
+            value={formData.subject}
+            onChange={handleChange}
           />
 
           <div className="mt-6">
@@ -56,6 +110,8 @@ const ContactForm = () => {
               cols="14"
               rows="6"
               aria-label="Message"
+              value={formData.message}
+              onChange={handleChange}
             ></textarea>
           </div>
 

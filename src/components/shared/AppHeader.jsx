@@ -55,11 +55,11 @@ const AppHeader = () => {
               )} */}{" "}
               {activeTheme === "dark" ? (
                 <i className="text-3xl text-ternary-dark font-bold text-wrap">
-                  AmnaAnjum
+                  AminaAnjum
                 </i>
               ) : (
                 <i className="text-3xl font-bold text-white text-balance ">
-                  AmnaAnjum
+                  AminaAnjum
                 </i>
               )}
             </Link>
